@@ -1,0 +1,11 @@
+services:
+  php:
+    build: .
+    container_name: interest-account-library
+    volumes:
+      - .:/src
+      - ./vendor:/src/vendor   
+    working_dir: /src
+    stdin_open: true
+    tty: true
+    command: ["/bin/sh", "-c", "composer install && php -a"]
