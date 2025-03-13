@@ -20,9 +20,10 @@ Thumbs.db
 storage/logs/
 *.log
 
-# Ignore PHPUnit coverage reports
+# Ignore PHPUnit coverage reports and cache
 /coverage-report/
 /coverage.txt
+.phpunit.result.cache
 
 # Ignore Docker artifacts
 docker-compose.override.yml
