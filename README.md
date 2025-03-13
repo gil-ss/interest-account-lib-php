@@ -75,12 +75,11 @@ To stop the container:
 make down
 ```
 
-
 ## Setting Up Cron Job for Interest Calculation
 To ensure interest calculations run automatically every 3 days, add the following entry to your system's crontab:
 
 ```sh
-0 0 */3 * * php /path/to/interest-account-library/calculate-interest.php >> /var/log/interest_account.log 2>&1
+0 0 */3 * * php /path/to/interest-account-library/src/Scripts/calculate-interest.php >> /var/log/interest_account.log 2>&1
 ```
 
 - Replace `/path/to/interest-account-library/` with the actual path where the project is stored.
