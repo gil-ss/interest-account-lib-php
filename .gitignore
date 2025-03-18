@@ -33,3 +33,5 @@ docker-compose.override.yml
 /node_modules/
 dist/
 build/
+
+composer.lock
