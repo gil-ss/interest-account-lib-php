@@ -8,6 +8,7 @@ use InterestAccountLibrary\Client\Interfaces\StatsApiClientInterface;
 use InterestAccountLibrary\Exceptions\AccountException;
 use InterestAccountLibrary\Account\Entities\InterestAccount;
 use InterestAccountLibrary\Exceptions\ApiException;
+use InterestAccountLibrary\Utils\Money;
 
 class InterestAccountService implements AccountServiceInterface
 {
@@ -47,7 +48,7 @@ class InterestAccountService implements AccountServiceInterface
         return $account->getTransactions();
     }
 
-    public function deposit(string $userId, float $amount): void
+    public function deposit(string $userId, Money $amount): void
     {
         $account = $this->storage->get($userId);
         if (!$account) {

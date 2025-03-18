@@ -9,6 +9,7 @@ use InterestAccountLibrary\Client\Interfaces\StatsApiClientInterface;
 use InterestAccountLibrary\Exceptions\AccountException;
 use InterestAccountLibrary\Account\Entities\InterestAccount;
 use InterestAccountLibrary\Exceptions\ApiException;
+use InterestAccountLibrary\Utils\Money;
 use Mockery;
 
 class InterestAccountServiceTest extends TestCase
@@ -61,8 +62,8 @@ class InterestAccountServiceTest extends TestCase
 
         $this->storageMock->shouldReceive('get')->with($this->userId)->andReturn($mockAccount);
         $this->storageMock->shouldReceive('update')->with(Mockery::type(InterestAccount::class))->andReturnTrue();
-
-        $this->service->deposit($this->userId, 50);
+  
+        $this->service->deposit($this->userId, new Money(5000));
 
         $this->assertTrue(true);
     }
@@ -72,13 +73,13 @@ class InterestAccountServiceTest extends TestCase
         $this->storageMock->shouldReceive('get')->with($this->userId)->andReturnNull();
 
         $this->expectException(AccountException::class);
-        $this->service->deposit($this->userId, 50);
+        $this->service->deposit($this->userId, new Money(5000));
     }
 
     public function testCalculateInterestForExistingAccount(): void
     {
         $mockAccount = new InterestAccount($this->userId, 0.01);
-        $mockAccount->deposit(100);
+        $mockAccount->deposit(new Money(10000));
 
         $this->storageMock->shouldReceive('get')->with($this->userId)->andReturn($mockAccount);
         $this->storageMock->shouldReceive('update')->with(Mockery::type(InterestAccount::class))->andReturnTrue();
@@ -95,7 +96,7 @@ class InterestAccountServiceTest extends TestCase
     public function testGetAccountStatement(): void
     {
         $mockAccount = new InterestAccount($this->userId, 0.01);
-        $mockAccount->deposit(100); // Simulamos um depósito de 100
+        $mockAccount->deposit(new Money(10000));
 
         $this->storageMock->shouldReceive('get')->with($this->userId)->andReturn($mockAccount);
 

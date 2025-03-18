@@ -3,19 +3,19 @@
 namespace InterestAccountLibrary\Account\Entities;
 
 use InterestAccountLibrary\Exceptions\AccountException;
-
+use InterestAccountLibrary\Utils\Money;
 
 class InterestAccount
 {
     private string $userId;
-    private float $balance;
+    private Money $balance;
     private float $interestRate;
     private array $transactions;
 
     public function __construct(string $userId, float $interestRate)
     {
         $this->userId = $userId;
-        $this->balance = 0.0;
+        $this->balance = new Money(0);
         $this->interestRate = $interestRate;
         $this->transactions = [];
     }
@@ -25,7 +25,7 @@ class InterestAccount
         return $this->userId;
     }
 
-    public function getBalance(): float
+    public function getBalance(): Money
     {
         return $this->balance;
     }
@@ -40,13 +40,13 @@ class InterestAccount
         return $this->interestRate;
     }
 
-    public function deposit(float $amount): void
+    public function deposit(Money $amount): void
     {
         if ($amount <= 0) {
             throw new AccountException('Amount must be positive.');
         }
 
-        $this->balance += $amount;
+        $this->balance = $this->balance->add($amount);
         $this->transactions[] = [
             'type' => 'deposit',
             'amount' => $amount,
@@ -54,12 +54,13 @@ class InterestAccount
         ];
     }
 
-    public function calculateInterest(): float
+    public function calculateInterest(): Money
     {
-        $interest = $this->balance * $this->interestRate;
+        $interest = $this->balance->multiply($this->interestRate);
 
-        if ($interest >= 0.01) {
-            $this->balance += $interest;
+        // Only add if at least 1 cent
+        if ($interest >= 1) {
+            $this->balance = $this->balance->add($interest);
             $this->transactions[] = [
                 'type' => 'interest',
                 'amount' => $interest,
@@ -68,24 +69,25 @@ class InterestAccount
             return $interest;
         }
 
-        return 0.0;
+        return new Money(0);
     }
 
     public function toArray(): array
     {
         return [
             'userId' => $this->userId,
-            'balance' => $this->balance,
-            'transactions' => $this->transactions,
+            'balance' => $this->balance->getAmount(),
             'interestRate' => $this->interestRate,
+            'transactions' => $this->transactions
         ];
     }
 
     public static function fromArray(array $data): InterestAccount
     {
         $account = new self($data['userId'], $data['interestRate']);
-        $account->balance = $data['balance'];
+        $account->balance = new Money((int) $data['balance']);
         $account->transactions = $data['transactions'] ?? [];
+
         return $account;
     }
 }
