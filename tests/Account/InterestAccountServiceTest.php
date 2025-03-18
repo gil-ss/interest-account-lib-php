@@ -16,12 +16,14 @@ class InterestAccountServiceTest extends TestCase
     private InterestAccountService $service;
     private $storageMock;
     private $statsApiMock;
+    private $userId;
 
     protected function setUp(): void
     {
         $this->storageMock = Mockery::mock(StorageInterface::class);
         $this->statsApiMock = Mockery::mock(StatsApiClientInterface::class);
         $this->service = new InterestAccountService($this->storageMock, $this->statsApiMock);
+        $this->userId = 'user-123';
     }
 
     public function tearDown(): void
@@ -31,75 +33,73 @@ class InterestAccountServiceTest extends TestCase
 
     public function testCanOpenAccountSuccessfully(): void
     {
-        $userId = 'user-123';
         $income = 600000;
 
-        $this->storageMock->shouldReceive('get')->with($userId)->andReturnNull();
-        $this->statsApiMock->shouldReceive('getUserIncome')->with($userId)->andReturn($income);
+        $this->storageMock->shouldReceive('get')->with($this->userId)->andReturnNull();
+        $this->statsApiMock->shouldReceive('getUserIncome')->with($this->userId)->andReturn($income);
         $this->storageMock->shouldReceive('save')->with(Mockery::type(InterestAccount::class))->andReturnTrue();
 
-        $result = $this->service->openAccount($userId);
+        $result = $this->service->openAccount($this->userId);
 
         $this->assertTrue($result);
     }
 
     public function testCannotOpenDuplicateAccount(): void
     {
-        $userId = 'user-123';
-        $this->storageMock->shouldReceive('get')->with($userId)->andReturn(['userId' => $userId]);
+        $mockAccount = new InterestAccount($this->userId, 0.01);
+        $this->storageMock->shouldReceive('get')->with($this->userId)->andReturn($mockAccount);
 
         $this->expectException(AccountException::class);
-        $this->service->openAccount($userId);
+        $this->service->openAccount($this->userId);
     }
 
     public function testDepositToExistingAccount(): void
     {
-        $userId = 'user-123';
-        $accountData = ['userId' => $userId, 'balance' => 100, 'interestRate' => 0.01, 'transactions' => []];
+        $mockAccount = new InterestAccount($this->userId, 0.01);
+        $this->storageMock->shouldReceive('get')->with($this->userId)->andReturn($mockAccount);
 
-        $this->storageMock->shouldReceive('get')->with($userId)->andReturn($accountData);
+
+        $this->storageMock->shouldReceive('get')->with($this->userId)->andReturn($mockAccount);
         $this->storageMock->shouldReceive('update')->with(Mockery::type(InterestAccount::class))->andReturnTrue();
 
-        $this->service->deposit($userId, 50);
+        $this->service->deposit($this->userId, 50);
 
         $this->assertTrue(true);
     }
 
     public function testDepositToNonExistentAccountThrowsException(): void
     {
-        $userId = 'user-123';
-        $this->storageMock->shouldReceive('get')->with($userId)->andReturnNull();
+        $this->storageMock->shouldReceive('get')->with($this->userId)->andReturnNull();
 
         $this->expectException(AccountException::class);
-        $this->service->deposit($userId, 50);
+        $this->service->deposit($this->userId, 50);
     }
 
     public function testCalculateInterestForExistingAccount(): void
     {
-        $userId = 'user-123';
-        $accountData = ['userId' => $userId, 'balance' => 100, 'interestRate' => 0.01, 'transactions' => []];
+        $mockAccount = new InterestAccount($this->userId, 0.01);
+        $mockAccount->deposit(100);
 
-        $this->storageMock->shouldReceive('get')->with($userId)->andReturn($accountData);
+        $this->storageMock->shouldReceive('get')->with($this->userId)->andReturn($mockAccount);
+        $this->storageMock->shouldReceive('update')->with(Mockery::type(InterestAccount::class))->andReturnTrue();
+
+
+        $this->storageMock->shouldReceive('get')->with($this->userId)->andReturn($mockAccount);
         $this->storageMock->shouldReceive('save')->with(Mockery::type(InterestAccount::class))->andReturnTrue();
 
-        $result = $this->service->calculateInterest($userId);
+        $result = $this->service->calculateInterest($this->userId);
 
         $this->assertTrue($result);
     }
 
     public function testGetAccountStatement(): void
     {
-        $userId = 'user-123';
-        $accountData = [
-            'userId' => $userId,
-            'balance' => 100,
-            'interestRate' => 0.01,
-            'transactions' => [['type' => 'deposit', 'amount' => 100, 'date' => '2025-03-13']]
-        ];
+        $mockAccount = new InterestAccount($this->userId, 0.01);
+        $mockAccount->deposit(100); // Simulamos um depósito de 100
 
-        $this->storageMock->shouldReceive('get')->with($userId)->andReturn($accountData);
+        $this->storageMock->shouldReceive('get')->with($this->userId)->andReturn($mockAccount);
 
-        $statement = $this->service->getAccountStatement($userId);
+        $statement = $this->service->getAccountStatement($this->userId);
         $this->assertIsArray($statement);
         $this->assertCount(1, $statement);
         $this->assertEquals('deposit', $statement[0]['type']);
@@ -107,11 +107,10 @@ class InterestAccountServiceTest extends TestCase
 
     public function testOpenAccountFailsOnApiFailure(): void
     {
-        $userId = 'user-123';
-        $this->storageMock->shouldReceive('get')->with($userId)->andReturnNull();
-        $this->statsApiMock->shouldReceive('getUserIncome')->with($userId)->andThrow(new ApiException("API Error"));
+        $this->storageMock->shouldReceive('get')->with($this->userId)->andReturnNull();
+        $this->statsApiMock->shouldReceive('getUserIncome')->with($this->userId)->andThrow(new ApiException("API Error"));
 
         $this->expectException(AccountException::class);
-        $this->service->openAccount($userId);
+        $this->service->openAccount($this->userId);
     }
 }

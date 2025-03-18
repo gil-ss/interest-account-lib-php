@@ -41,10 +41,10 @@ class JsonStorage implements StorageInterface
         return $this->saveAccounts($accounts);
     }
 
-    public function get(string $userId): ?array
+    public function get(string $userId): ?InterestAccount
     {
         $accounts = $this->loadAccounts();
-        return $accounts[$userId] ?? null;
+        return isset($accounts[$userId]) ? InterestAccount::fromArray($accounts[$userId]) : null;
     }
 
     public function update(InterestAccount $account): bool

@@ -15,9 +15,9 @@ class InMemoryStorage implements StorageInterface
         return true;
     }
 
-    public function get(string $userId): ?array
+    public function get(string $userId): ?InterestAccount
     {
-        return $this->accounts[$userId] ?? null;
+        return isset($this->accounts[$userId]) ? InterestAccount::fromArray($this->accounts[$userId]) : null;
     }
 
     public function delete(string $userId): bool
