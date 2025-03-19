@@ -12,7 +12,8 @@ The **Interest Account Library** is a PHP-based system for managing interest-bea
 - Integration with an external **Stats API** to determine user income
 - Fully tested with PHPUnit
 - Automated interest calculation using a scheduled cron job
-
+- Uses **Money pattern** for precise financial calculations
+- Implements **interface-based architecture** for flexibility
 
 ## Installation
 ### Prerequisites
@@ -51,7 +52,7 @@ $service->openAccount('user-123');
 
 ### Deposit Funds
 ```php
-$service->deposit('user-123', 500);
+$service->deposit('user-123', new Money(50000)); // 500.00 in cents
 ```
 
 ### Calculate Interest
@@ -94,6 +95,12 @@ To verify scheduled jobs:
 ```sh
 crontab -l
 ```
+
+## Code Quality & Testing
+- **Uses PHPUnit** for unit testing.
+- **Mockery** for testing service dependencies.
+- **Interfaces for abstraction** allow easy replacement of components.
+- **Money pattern ensures precision in calculations.**
 
 ---
 Developed with ❤️ by Gilberto.
