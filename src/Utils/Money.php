@@ -4,7 +4,7 @@ namespace InterestAccountLibrary\Utils;
 
 class Money implements MoneyInterface
 {
-    // Stores values ​​ALWAYS in cents
+    // Stores values ​​ALWAYS in cents [fixed-point representation]
     private int $amount;
 
     public function __construct(int $amount)

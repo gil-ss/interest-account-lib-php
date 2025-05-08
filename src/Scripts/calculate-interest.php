@@ -13,7 +13,7 @@ try {
     // Initialize dependencies
     $storage = new JsonStorage('accounts.json');
     $httpClient = new Client();
-    $statsApiClient = new StatsApiClient($httpClient, 'https://stats.dev.chip.test/', new NullLogger());
+    $statsApiClient = new StatsApiClient($httpClient, 'https://stats.dev.test/', new NullLogger());
     $service = new InterestAccountService($storage, $statsApiClient);
 
     // Retrieve all stored accounts

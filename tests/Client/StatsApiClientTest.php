@@ -30,7 +30,7 @@ class StatsApiClientTest extends TestCase
         $this->loggerMock = Mockery::mock(LoggerInterface::class);
         $this->loggerMock->shouldReceive('error')->andReturnNull();
         $this->httpClientMock = new Client(['handler' => $handlerStack]);
-        $this->statsApiClient = new StatsApiClient($this->httpClientMock, 'https://stats.dev.chip.test/',  $this->loggerMock);
+        $this->statsApiClient = new StatsApiClient($this->httpClientMock, 'https://stats.dev.test/',  $this->loggerMock);
     }
 
     public function testCanRetrieveUserIncomeSuccessfully(): void
@@ -46,7 +46,7 @@ class StatsApiClientTest extends TestCase
     public function testThrowsExceptionOnApiFailure(): void
     {
         $userId = 'user-123';
-        $this->mockHandler->append(new RequestException("API Error", new Request('GET', "https://stats.dev.chip.test/users/$userId")));
+        $this->mockHandler->append(new RequestException("API Error", new Request('GET', "https://stats.dev.test/users/$userId")));
     
         $this->loggerMock->shouldReceive('error')->once()->with(Mockery::type('string'))->andReturnNull();
     
@@ -57,7 +57,7 @@ class StatsApiClientTest extends TestCase
     public function testThrowsExceptionOnConnectionFailure(): void
     {
         $userId = 'user-123';
-        $this->mockHandler->append(new ConnectException("Connection error", new Request('GET', "https://stats.dev.chip.test/users/$userId")));
+        $this->mockHandler->append(new ConnectException("Connection error", new Request('GET', "https://stats.dev.test/users/$userId")));
     
         $this->loggerMock->shouldReceive('error')->once()->with(Mockery::type('string'))->andReturnNull();
     

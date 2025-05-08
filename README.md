@@ -44,7 +44,7 @@ The **Interest Account Library** is a PHP-based system for managing interest-bea
 ### Open an Account
 ```php
 $storage = new JsonStorage('accounts.json');
-$statsApi = new StatsApiClient(new Client(), 'https://stats.dev.chip.test/');
+$statsApi = new StatsApiClient(new Client(), 'https://stats.dev.test/');
 $service = new InterestAccountService($storage, $statsApi);
 
 $service->openAccount('user-123');
@@ -103,5 +103,7 @@ crontab -l
 - **Money pattern ensures precision in calculations.**
 
 ---
-Developed with ❤️ by Gilberto.
+---
+
+<p align="center"><strong>Developed with ❤️ by Gil</strong></p>
 
