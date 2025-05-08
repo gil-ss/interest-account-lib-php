@@ -1,4 +1,13 @@
-# Interest Account Library
+# 💰 Interest Account Library 🐘
+
+![PHPUnit](https://img.shields.io/github/actions/workflow/status/gil-ss/interest-account-lib-php/tests.yml?branch=main&label=PHPUnit&logo=php&logoColor=white)
+[![Cobertura de código](https://codecov.io/gh/gil-ss/interest-account-lib-php/branch/main/graph/badge.svg)](https://codecov.io/gh/gil-ss/interest-account-lib-php)
+
+
+![PHP](https://img.shields.io/badge/PHP-7A86B8?logo=php&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-7A86B8?logo=docker&logoColor=white)
+![Composer](https://img.shields.io/badge/Composer-7A86B8?logo=composer&logoColor=white)
+![Makefile](https://img.shields.io/badge/Makefile-7A86B8?logo=gnu&logoColor=white)
 
 ## Overview
 The **Interest Account Library** is a PHP-based system for managing interest-bearing accounts. It allows users to open accounts, deposit funds, calculate interest, and retrieve account statements. The library integrates with an external API to determine interest rates based on user income.

@@ -26,6 +26,10 @@ test:
 
 # Run PHPUnit test coverage
 coverage:
+	$(DOCKER_COMPOSE) exec php vendor/bin/phpunit --coverage-clover=coverage.xml --coverage-html coverage-report
+
+# Run PHPUnit test coverage
+coverage:
 	$(DOCKER_COMPOSE) exec php vendor/bin/phpunit --coverage-html coverage-report
 
 # Clean up vendor directory and remove containers
