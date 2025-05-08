@@ -43,4 +43,4 @@ logs:
 
 # Run composer install
 install:
-	docker-compose exec php composer install
+	$(DOCKER_COMPOSE) exec php composer install
