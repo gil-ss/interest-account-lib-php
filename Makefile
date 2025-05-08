@@ -2,7 +2,7 @@
 
 .PHONY: build up down shell test coverage clean
 
-DOCKER_COMPOSE = docker-compose
+DOCKER_COMPOSE = docker compose
 
 # Build the Docker container
 build:
