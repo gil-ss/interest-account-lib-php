@@ -26,13 +26,13 @@ jobs:
             'until [ "$(docker inspect -f "{{.State.Health.Status}}" $(docker compose ps -q php))" = "healthy" ]; do sleep 1; done'
 
       - name: Install dependencies inside the container
-        run: make container-install
+        run: make install
 
       - name: Run tests inside the container
-        run: make container-test
+        run: make test
 
       - name: Generate coverage inside the container
-        run: make container-coverage
+        run: make coverage
 
       - name: Upload coverage report to Codecov
         uses: codecov/codecov-action@v3
