@@ -9,3 +9,8 @@ services:
     stdin_open: true
     tty: true
     command: ["/bin/sh", "-c", "composer install && php -a"]
+    healthcheck:
+      test: ["CMD", "php", "-v"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
